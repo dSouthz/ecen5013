@@ -5,7 +5,7 @@
 
 int8_t memmove(uint8_t *src, uint8_t *dst, uint32_t length)
 {
-    uint32_t i = length - 1;
+    uint32_t i;
 
     /* Check error conditions */
 
@@ -17,20 +17,31 @@ int8_t memmove(uint8_t *src, uint8_t *dst, uint32_t length)
     {
         return 2;
     }
-    else if (length == 0)
+
+    if (src > dst)
     {
-        return 3;
+        /*     If the source is greater than the destination, always do a left to
+            right move. This prevents us from overwriting the source if the
+            two regions overlap
+        */
+        for (i = 0; i < length; i++)
+        {
+            dst[i] = src[i];
+        }
+    }
+    else
+    {
+        /*  The source occurs before the dest. Move memory from end of src to
+            beginning. This keeps us from overwriting the source.
+        */
+        i = length - 1;
+        while (i != 0)
+        {
+            dst[i] = src[i];
+            i--;
+        }
     }
 
-    /*  Move memory, from end of src to beginning. This avoids problems where
-        the src and dst overlap.
-    */
-
-    while (i != 0)
-    {
-        dst[i] = src[i];
-        i--;
-    }
 
     return 0;
 }
