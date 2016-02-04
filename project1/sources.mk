@@ -2,7 +2,7 @@
 # Included based on PROJECT variable passed into top level makefile
 
 # Basic definitions
-PROJECT_NAME = project1
+PROJECT_NAME = project
 PROJ_DIR = $(TOP_LEVEL)/$(PROJECT_NAME)
 PROJ_OUT_DIR = $(OUT_DIR)/$(PROJECT_NAME)
 MAP_FILE = $(PROJ_OUT_DIR)/output.map
@@ -39,15 +39,15 @@ compile-all: $(OBJECTS)
 
 %.o: $(PROJ_DIR)/src/%.c setup
 	$(Q)$(CC) $(CFLAGS) -c $< -o $(PROJ_OUT_DIR)/$@
-	$(Q)echo "Build of $@ complete. Output in: $(PROJ_OUT_DIR)/$@"
+	$(Q)echo "Build of $@ complete. Output: $(PROJ_OUT_DIR)/$@"
 
 %.S: $(PROJ_DIR)/src/%.c setup
 	$(Q)$(CC) $(CFLAGS) -S $< -o $(PROJ_OUT_DIR)/$@
-	$(Q)echo "Build of $@ complete. Output in: $(PROJ_OUT_DIR)/$@"
+	$(Q)echo "Build of $@ complete. Output: $(PROJ_OUT_DIR)/$@"
 
 %.asm: $(PROJ_DIR)/src/%.c setup
 	$(Q)$(CC) $(CFLAGS) -S $< -o $(PROJ_OUT_DIR)/$@
-	$(Q)echo "Build of $@ complete. Output in: $(PROJ_OUT_DIR)/$@"
+	$(Q)echo "Build of $@ complete. Output: $(PROJ_OUT_DIR)/$@"
 
 build: compile-all
 	$(Q)tput setaf 4
@@ -56,9 +56,12 @@ build: compile-all
 	$(Q)$(CC) $(LDFLAGS) $(CFLAGS) $(addprefix $(PROJ_OUT_DIR)/, $(OBJECTS)) \
 		 -o $(PROJ_OUT_DIR)/$(PROJECT_NAME)
 	$(Q)tput setaf 2
-	$(Q)echo "All files built and linked. Output in: $(PROJ_OUT_DIR)/$(PROJECT_NAME)"
-	$(Q)echo "Map file at $(MAP_FILE)"
+	$(Q)echo "All files built and linked. Output: $(PROJ_OUT_DIR)/$(PROJECT_NAME)"
+	$(Q)echo "Map file output: $(MAP_FILE)"
 	$(Q)tput setaf 7
+	$(Q)echo -e "Program size is "
+	$(Q)$(SIZE) $(PROJ_OUT_DIR)/$(PROJECT_NAME)
+
 
 upload: build
 	$(Q)tput setaf 4
