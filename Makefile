@@ -1,9 +1,19 @@
 ARCH = $(shell uname -m)
-#TODO: change this to hf when we get new BBB....
-ARM_XCC := arm-linux-gnueabi
+
+# Student's note: I have two Beaglebone Blacks
+# One is revision A5B, which does not support gnueabihf,
+# and the other is a revision C, which does support gnueabihf
+#
+# Default to gnueabihf
+#
+# This can also be expanded for other devices as the class pogresses
+ifeq ($(DEVICE), BBB-A5B)
+	ARM_XCC = arm-linux-gnueabi
+else
+	ARM_XCC := arm-linux-gnueabihf
+endif
 
 ## Environment setup ##
-
 TOP_LEVEL := $(abspath $(shell pwd))
 OUT_DIR	  := $(TOP_LEVEL)/out
 
@@ -28,30 +38,35 @@ else
 	READELF = readelf
 endif
 
-# Define warning, optimization, debug options
+# Enables/suppresses verbose command output
+ifdef VERBOSE
+	Q=
+else
+	export Q=@
+endif
 
-#TODO:
-.PHONY: test mysetup clean
+# Flags common to all projects
+CFLAGS= -std=c99
+LDFLAGS=
 
-test:
-	echo "Test"
+# Include project specific makefiles
+ifdef PROJECT
+	include $(TOP_LEVEL)/$(PROJECT)/sources.mk
+else
+	PROJECT = project1
+	include $(TOP_LEVEL)/$(PROJECT)/sources.mk
+endif
+
+# Targets for all projects
+.PHONY: setup clean clean-all
 
 setup:
-	@echo "setup"
-	mkdir -p $(OUT_DIR)
+	$(Q)mkdir -p $(OUT_DIR)
+	$(Q)mkdir -p $(PROJ_OUT_DIR)
 
 clean:
+	rm -rf $(PROJ_OUT_DIR)
+
+clean-all:
 	rm -rf $(OUT_DIR)
 
-
-#TODO: clean up and generic-ize
-include project1/sources.mk
-
-
-#ifndef PROJECT
-#	#Default target
-#	PROJECT = project1
-#	include project1/sources.mk
-#else
-#	include $(PROJECT)/sources.mk
-#endif
