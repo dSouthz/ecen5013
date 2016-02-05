@@ -20,7 +20,7 @@ int8_t memmove(uint8_t *src, uint8_t *dst, uint32_t length)
 
     if (src > dst)
     {
-        /*     If the source is greater than the destination, always do a left to
+        /*  If the source is greater than the destination, always do a left to
             right move. This prevents us from overwriting the source if the
             two regions overlap
         */
@@ -34,10 +34,10 @@ int8_t memmove(uint8_t *src, uint8_t *dst, uint32_t length)
         /*  The source occurs before the dest. Move memory from end of src to
             beginning. This keeps us from overwriting the source.
         */
-        i = length - 1;
+        i = length;
         while (i != 0)
         {
-            dst[i] = src[i];
+            dst[i-1] = src[i-1];
             i--;
         }
     }
@@ -61,9 +61,13 @@ int8_t memcpy(uint8_t *src, uint8_t *dst, uint32_t length)
     {
         return 2;
     }
-    else if ((src + length) > dst)
+    else if ((src + length) > dst && (src + length) < (dst + length))
     {
         return 3;
+    }
+    else if ((dst + length) > src && (dst + length) < (src + length))
+    {
+        return 4;
     }
 
     /* Copy memory */
@@ -108,6 +112,10 @@ int8_t reverse(uint8_t *src, uint32_t length)
         return 1;
     }
 
+    if (length == 0)
+    {
+        return 0;
+    }
     /*  We will use an in-place xor algorithm. This will avoid having to
         do any division instructions to calculate when to stop
      */
