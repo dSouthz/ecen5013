@@ -4,6 +4,7 @@
 # Basic definitions
 PROJECT_NAME = project1
 PROJECT_OUTPUT_NAME = project
+PROJECT_OUTPUT_NAME_TEST = project_test
 PROJ_DIR = $(TOP_LEVEL)/$(PROJECT_NAME)
 PROJ_OUT_DIR = $(OUT_DIR)/$(PROJECT_NAME)
 MAP_FILE = $(PROJ_OUT_DIR)/output.map
@@ -16,6 +17,7 @@ LDFLAGS += -Xlinker -Map -Xlinker $(MAP_FILE)
 
 # Build files
 OBJECTS = memory.o project_1.o main.o
+TEST_OBJECTS = memory.o project_1.o test_memory.o
 
 # Debug flags
 ifeq ($(BUILD), RELEASE)
@@ -71,3 +73,11 @@ upload: build
 	$(Q)tput setaf 2
 	$(Q)echo "Upload complete! You may run your program at $(SCP_DIR)/$(PROJECT_OUTPUT_NAME)"
 	$(Q)tput setaf 7
+
+test: $(TEST_OBJECTS)
+	$(Q)$(CC) $(LDFLAGS) $(CFLAGS) $(addprefix $(PROJ_OUT_DIR)/, $(TEST_OBJECTS)) \
+		 -o $(PROJ_OUT_DIR)/$(PROJECT_OUTPUT_NAME_TEST)
+	$(Q)tput setaf 2
+	$(Q)echo "Test files built and linked. Output: $(PROJ_OUT_DIR)/$(PROJECT_OUTPUT_NAME_TEST)"
+	$(Q)tput setaf 7
+	$(Q)echo "Be sure to run this on the device and not on a host computer"

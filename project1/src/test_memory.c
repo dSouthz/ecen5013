@@ -439,20 +439,15 @@ TestResult_t test_reverse_valid_ptr()
 
 TestResult_t test_reverse_null_ptr()
 {
-    uint8_t memory[MEM_SIZE];
     uint8_t *pRegion = NULL;
-    uint32_t i;
-
-    for (i=0; i < MEM_SIZE; i++)
-    {
-        memory[i] = i;
-    }
 
     if (!reverse(pRegion, MEM_SIZE))
     {
         printf("%s: reverse returned success on a null pointer\n", __FUNCTION__);
         return TEST_FAIL;
     }
+
+    return TEST_SUCCESS;
 }
 
 TestResult_t test_reverse_zero_length()
