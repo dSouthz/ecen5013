@@ -132,34 +132,3 @@ int8_t reverse(uint8_t *src, uint32_t length)
     return 0;
 }
 
-
-char reverse_string(char *str, int length)
-{
-    char *end;
-    char tmp;
-    int i;
-
-    if (str == NULL)
-    {
-        return 1;
-    }
-
-    if (length <= 0)
-    {
-        return 2;
-    }
-
-    end = str + length - 1;
-
-    for (i=0; i<length/2; i++)
-    {
-        tmp = *str;
-        *str = *end;
-        *end = tmp;
-
-        str++;
-        end--;
-    }
-
-    return 0;
-}
