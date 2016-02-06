@@ -24,7 +24,7 @@ void project_1_report()
         *(aptr_1 + i) = i + 1;
     }
 
-    memzero(aptr_3, (ARRAY_SIZE - 1) - PTR_3_POS);
+    memzero(aptr_3, ARRAY_SIZE - PTR_3_POS);
     memcpy(aptr_1, aptr_3, MEMCPY_AMOUNT);
     memmove(aptr_2, aptr_1, MEMMOVE_AMOUNT);
     reverse(aptr_1, ARRAY_SIZE);
