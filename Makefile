@@ -53,6 +53,7 @@ LDFLAGS=
 ifdef PROJECT
 	include $(TOP_LEVEL)/$(PROJECT)/sources.mk
 else
+	# Default project - will change as course progresses
 	PROJECT = project1
 	include $(TOP_LEVEL)/$(PROJECT)/sources.mk
 endif
@@ -64,8 +65,8 @@ setup:
 	$(Q)mkdir -p $(OUT_DIR)
 	$(Q)mkdir -p $(PROJ_OUT_DIR)
 
-clean:
+clean: proj-clean
 	rm -rf $(PROJ_OUT_DIR)
 
-clean-all:
+clean-all: clean
 	rm -rf $(OUT_DIR)

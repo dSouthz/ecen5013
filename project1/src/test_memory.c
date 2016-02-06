@@ -18,6 +18,7 @@ void Initialize(uint8_t *pMemory, uint32_t length, uint8_t value)
     }
 }
 
+//See test_memory.h for documentation
 TestResult_t test_memmove_non_overlap()
 {
     uint8_t memory[MEM_SIZE];
@@ -50,7 +51,7 @@ TestResult_t test_memmove_non_overlap()
     return TEST_SUCCESS;
 }
 
-
+//See test_memory.h for documentation
 TestResult_t test_memmove_overlap_left()
 {
     uint8_t memory[MEM_SIZE];
@@ -83,6 +84,7 @@ TestResult_t test_memmove_overlap_left()
     return TEST_SUCCESS;
 }
 
+//See test_memory.h for documentation
 TestResult_t test_memmove_overlap_right()
 {
     uint8_t memory[MEM_SIZE];
@@ -115,6 +117,7 @@ TestResult_t test_memmove_overlap_right()
     return TEST_SUCCESS;
 }
 
+//See test_memory.h for documentation
 TestResult_t test_memmove_null_ptr()
 {
     uint8_t memory[MEM_SIZE];
@@ -148,6 +151,7 @@ TestResult_t test_memmove_null_ptr()
     return TEST_SUCCESS;
 }
 
+//See test_memory.h for documentation
 TestResult_t test_memmove_zero_length()
 {
     uint8_t memory[MEM_SIZE];
@@ -180,6 +184,7 @@ TestResult_t test_memmove_zero_length()
     return TEST_SUCCESS;
 }
 
+//See test_memory.h for documentation
 TestResult_t test_memcpy_non_overlap()
 {
     uint8_t memory[MEM_SIZE];
@@ -212,6 +217,7 @@ TestResult_t test_memcpy_non_overlap()
     return TEST_SUCCESS;
 }
 
+//See test_memory.h for documentation
 TestResult_t test_memcpy_overlap_left()
 {
     uint8_t memory[MEM_SIZE];
@@ -244,6 +250,7 @@ TestResult_t test_memcpy_overlap_left()
     return TEST_SUCCESS;
 }
 
+//See test_memory.h for documentation
 TestResult_t test_memcpy_overlap_right()
 {
     uint8_t memory[MEM_SIZE];
@@ -276,6 +283,7 @@ TestResult_t test_memcpy_overlap_right()
     return TEST_SUCCESS;
 }
 
+//See test_memory.h for documentation
 TestResult_t test_memcpy_null_ptr()
 {
     uint8_t memory[MEM_SIZE];
@@ -308,6 +316,8 @@ TestResult_t test_memcpy_null_ptr()
 
     return TEST_SUCCESS;
 }
+
+//See test_memory.h for documentation
 TestResult_t test_memcpy_zero_length()
 {
     uint8_t memory[MEM_SIZE];
@@ -340,6 +350,7 @@ TestResult_t test_memcpy_zero_length()
     return TEST_SUCCESS;
 }
 
+//See test_memory.h for documentation
 TestResult_t test_memzero_valid_ptr()
 {
     uint8_t memory[MEM_SIZE];
@@ -366,6 +377,7 @@ TestResult_t test_memzero_valid_ptr()
     return TEST_SUCCESS;
 }
 
+//See test_memory.h for documentation
 TestResult_t test_memzero_null_ptr()
 {
     uint8_t memory[MEM_SIZE];
@@ -382,6 +394,7 @@ TestResult_t test_memzero_null_ptr()
     return TEST_SUCCESS;
 }
 
+//See test_memory.h for documentation
 TestResult_t test_memzero_zero_length()
 {
     uint8_t memory[MEM_SIZE];
@@ -408,6 +421,7 @@ TestResult_t test_memzero_zero_length()
     return TEST_SUCCESS;
 }
 
+//See test_memory.h for documentation
 TestResult_t test_reverse_valid_ptr()
 {
     uint8_t memory[MEM_SIZE];
@@ -437,6 +451,7 @@ TestResult_t test_reverse_valid_ptr()
     return TEST_SUCCESS;
 }
 
+//See test_memory.h for documentation
 TestResult_t test_reverse_null_ptr()
 {
     uint8_t *pRegion = NULL;
@@ -450,6 +465,7 @@ TestResult_t test_reverse_null_ptr()
     return TEST_SUCCESS;
 }
 
+//See test_memory.h for documentation
 TestResult_t test_reverse_zero_length()
 {
     uint8_t memory[MEM_SIZE];

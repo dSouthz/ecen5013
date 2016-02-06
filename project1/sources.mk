@@ -7,6 +7,8 @@ PROJECT_OUTPUT_NAME = project
 PROJECT_OUTPUT_NAME_TEST = project_test
 PROJ_DIR = $(TOP_LEVEL)/$(PROJECT_NAME)
 PROJ_OUT_DIR = $(OUT_DIR)/$(PROJECT_NAME)
+PROJ_SYM_LINK = $(TOP_LEVEL)/$(PROJECT_OUTPUT_NAME)
+
 MAP_FILE = $(PROJ_OUT_DIR)/output.map
 
 # Compilation specific flags
@@ -37,47 +39,52 @@ ifndef SCP_DIR
 endif
 
 # Make targets
+build: compile-all
+	$(Q)$(CC) $(LDFLAGS) $(CFLAGS) $(addprefix $(PROJ_OUT_DIR)/, $(OBJECTS)) \
+		 -o $(PROJ_OUT_DIR)/$(PROJECT_OUTPUT_NAME)
+	$(Q)ln -sf $(PROJ_OUT_DIR)/$(PROJECT_OUTPUT_NAME) $(PROJ_SYM_LINK)
+	@tput setaf 2
+	@echo "All files built and linked. Output: $(PROJ_OUT_DIR)/$(PROJECT_OUTPUT_NAME)"
+	@echo "Map file output: $(MAP_FILE)"
+	@tput setaf 7
+	@echo -e "Program size is "
+	$(Q)$(SIZE) $(PROJ_OUT_DIR)/$(PROJECT_OUTPUT_NAME)
+	@tput setaf 3
+	@echo "You may also run ./project to run this project (only on target)"
+	@tput setaf 7
+
 compile-all: $(OBJECTS)
 
 %.o: $(PROJ_DIR)/src/%.c setup
 	$(Q)$(CC) $(CFLAGS) -c $< -o $(PROJ_OUT_DIR)/$@
-	$(Q)echo "Build of $@ complete. Output: $(PROJ_OUT_DIR)/$@"
+	@echo "Build of $@ complete. Output: $(PROJ_OUT_DIR)/$@"
 
 %.S: $(PROJ_DIR)/src/%.c setup
 	$(Q)$(CC) $(CFLAGS) -S $< -o $(PROJ_OUT_DIR)/$@
-	$(Q)echo "Build of $@ complete. Output: $(PROJ_OUT_DIR)/$@"
+	@echo "Build of $@ complete. Output: $(PROJ_OUT_DIR)/$@"
 
 %.asm: $(PROJ_DIR)/src/%.c setup
 	$(Q)$(CC) $(CFLAGS) -S $< -o $(PROJ_OUT_DIR)/$@
-	$(Q)echo "Build of $@ complete. Output: $(PROJ_OUT_DIR)/$@"
-
-build: compile-all
-	$(Q)tput setaf 4
-	$(Q)echo "Building and linking all files"
-	$(Q)tput setaf 7
-	$(Q)$(CC) $(LDFLAGS) $(CFLAGS) $(addprefix $(PROJ_OUT_DIR)/, $(OBJECTS)) \
-		 -o $(PROJ_OUT_DIR)/$(PROJECT_OUTPUT_NAME)
-	$(Q)tput setaf 2
-	$(Q)echo "All files built and linked. Output: $(PROJ_OUT_DIR)/$(PROJECT_OUTPUT_NAME)"
-	$(Q)echo "Map file output: $(MAP_FILE)"
-	$(Q)tput setaf 7
-	$(Q)echo -e "Program size is "
-	$(Q)$(SIZE) $(PROJ_OUT_DIR)/$(PROJECT_OUTPUT_NAME)
+	@echo "Build of $@ complete. Output: $(PROJ_OUT_DIR)/$@"
 
 upload: build
-	$(Q)tput setaf 4
-	$(Q)echo "Uploading $(PROJ_OUT_DIR)/$(PROJECT_OUTPUT_NAME) to device"
-	$(Q)tput setaf 7
+	@tput setaf 4
+	@echo "Uploading $(PROJ_OUT_DIR)/$(PROJECT_OUTPUT_NAME) to device"
+	@tput setaf 7
 	$(Q)ssh $(SCP_LOGIN) mkdir -p $(SCP_DIR)
 	$(Q)scp $(PROJ_OUT_DIR)/$(PROJECT_OUTPUT_NAME) $(SCP_LOGIN):$(SCP_DIR)
-	$(Q)tput setaf 2
-	$(Q)echo "Upload complete! You may run your program at $(SCP_DIR)/$(PROJECT_OUTPUT_NAME)"
-	$(Q)tput setaf 7
+	@tput setaf 2
+	@echo "Upload complete! You may run your program at $(SCP_DIR)/$(PROJECT_OUTPUT_NAME)"
+	@tput setaf 7
 
 test: $(TEST_OBJECTS)
 	$(Q)$(CC) $(LDFLAGS) $(CFLAGS) $(addprefix $(PROJ_OUT_DIR)/, $(TEST_OBJECTS)) \
 		 -o $(PROJ_OUT_DIR)/$(PROJECT_OUTPUT_NAME_TEST)
-	$(Q)tput setaf 2
-	$(Q)echo "Test files built and linked. Output: $(PROJ_OUT_DIR)/$(PROJECT_OUTPUT_NAME_TEST)"
-	$(Q)tput setaf 7
-	$(Q)echo "Be sure to run this on the device and not on a host computer"
+	@tput setaf 2
+	@echo "Test files built and linked. Output: $(PROJ_OUT_DIR)/$(PROJECT_OUTPUT_NAME_TEST)"
+	@tput setaf 7
+	@echo "Be sure to run this on the device and not on a host computer"
+
+# Used in conjunction with clean and clean-all, from top level Makefile
+proj-clean:
+	rm -rf $(PROJ_SYM_LINK)
