@@ -61,14 +61,6 @@ int8_t memcpy(uint8_t *src, uint8_t *dst, uint32_t length)
     {
         return 2;
     }
-    else if ((src + length) > dst && (src + length) < (dst + length))
-    {
-        return 3;
-    }
-    else if ((dst + length) > src && (dst + length) < (src + length))
-    {
-        return 4;
-    }
 
     /* Copy memory */
 

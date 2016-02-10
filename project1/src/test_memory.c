@@ -233,20 +233,12 @@ TestResult_t test_memcpy_overlap_left()
         pRegion2[i] = TEST_VALUE + i;
     }
 
-    if (!memcpy(pRegion1, pRegion2, MOVE_AMT))
+    if (memcpy(pRegion1, pRegion2, MOVE_AMT))
     {
-        printf("%s: memcpy returned success when it shouldn't have\n", __FUNCTION__);
+        printf("%s: memcpy returned failure when it shouldn't have\n", __FUNCTION__);
         return TEST_FAIL;
     }
 
-    for (i=0; i < MOVE_AMT; i++)
-    {
-        if (pRegion2[i] != TEST_VALUE + i)
-        {
-            printf("%s: copied memory when it should not have\n", __FUNCTION__);
-            return TEST_FAIL;
-        }
-    }
     return TEST_SUCCESS;
 }
 
@@ -265,22 +257,13 @@ TestResult_t test_memcpy_overlap_right()
         pRegion2[i] = TEST_VALUE + i;
     }
 
-    if (!memcpy(pRegion1, pRegion2, MOVE_AMT))
+    if (memcpy(pRegion1, pRegion2, MOVE_AMT))
     {
-        printf("%s: copied memory when it should not have\n", __FUNCTION__);
+        printf("%s: returned failure when it should not have\n", __FUNCTION__);
         return TEST_FAIL;
     }
 
-    for (i=0; i < MOVE_AMT; i++)
-    {
-        if (pRegion2[i] != TEST_VALUE + i)
-        {
-            printf("%s: copied memory when it should not have\n", __FUNCTION__);
-            return TEST_FAIL;
-        }
-    }
-
-    return TEST_SUCCESS;
+     return TEST_SUCCESS;
 }
 
 //See test_memory.h for documentation
