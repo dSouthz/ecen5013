@@ -170,6 +170,7 @@ extern "C" {
 /* #undef FAST_TRIM_ADDRESS */                             /* Fast oscillator not trimmed. Commented out for MISRA compliance. */
 /* #undef FAST_FINE_TRIM_ADDRESS */                        /* Fast oscillator not trimmed. Commented out for MISRA compliance. */
 
+#define CLOCK_SETUP 1
 #ifdef CLOCK_SETUP
 #if (CLOCK_SETUP == 0)
   #define DEFAULT_SYSTEM_CLOCK         20971520u           /* Default System clock value */
@@ -201,9 +202,15 @@ extern "C" {
   #define MCG_MODE                     MCG_MODE_PEE /* Clock generator mode */
   /* MCG_C1: CLKS=0,FRDIV=3,IREFS=0,IRCLKEN=1,IREFSTEN=0 */
   #define SYSTEM_MCG_C1_VALUE          0x1AU               /* MCG_C1 */
-  /* MCG_C2: LOCRE0=0,RANGE0=2,HGO0=0,EREFS0=1,LP=0,IRCS=0 */
-  #define SYSTEM_MCG_C2_VALUE          0x24U               /* MCG_C2 */
-  /* MCG_C4: DMX32=0,DRST_DRS=0,FCTRIM=0,SCFTRIM=0 */
+
+
+
+/* MCG_C2: LOCRE0=0,RANGE0=2,HGO0=0,EREFS0=1,LP=0,IRCS=0 */
+  //#define SYSTEM_MCG_C2_VALUE          0x24U               /* MCG_C2 */
+  #define SYSTEM_MCG_C2_VALUE          0x25U //Changed to IRCS=1 (Fast internal reference clock)
+
+
+/* MCG_C4: DMX32=0,DRST_DRS=0,FCTRIM=0,SCFTRIM=0 */
   #define SYSTEM_MCG_C4_VALUE          0x00U               /* MCG_C4 */
   /* MCG_SC: ATME=0,ATMS=0,ATMF=0,FLTPRSRV=0,FCRDIV=0,LOCS0=0 */
   #define SYSTEM_MCG_SC_VALUE          0x00U               /* MCG_SC */
@@ -219,8 +226,13 @@ extern "C" {
   #define SYSTEM_SIM_CLKDIV1_VALUE     0x10010000U         /* SIM_CLKDIV1 */
 /* SIM_SOPT1: USBREGEN=0,USBSSTBY=0,USBVSTBY=0,OSC32KSEL=3 */
   #define SYSTEM_SIM_SOPT1_VALUE       0x000C0000U         /* SIM_SOPT1 */
+
+
+
 /* SIM_SOPT2: UART0SRC=0,TPMSRC=1,USBSRC=0,PLLFLLSEL=1,CLKOUTSEL=0,RTCCLKOUTSEL=0 */
-  #define SYSTEM_SIM_SOPT2_VALUE       0x01010000U         /* SIM_SOPT2 */
+  //#define SYSTEM_SIM_SOPT2_VALUE       0x01010000U         /* SIM_SOPT2 */
+  #define SYSTEM_SIM_SOPT2_VALUE       0x02010000U  //changed to MCGIRCLK.. other selection uses 2 (OSCERCLK)
+
 #elif (CLOCK_SETUP == 2)
   #define DEFAULT_SYSTEM_CLOCK         4000000u            /* Default System clock value */
   #define MCG_MODE                     MCG_MODE_BLPI /* Clock generator mode */

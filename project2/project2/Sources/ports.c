@@ -7,13 +7,6 @@
 #include "MKL25Z4.h"
 #include "ports.h"
 
-#define PORT_MUX_DSBL 0x0u
-#define PORT_MUX_ALT1 0x1u
-#define PORT_MUX_ALT2 0x2u
-#define PORT_MUX_ALT3 0x3u
-#define PORT_MUX_ALT4 0x4u
-#define PORT_MUX_GPIO PORT_MUX_ALT1
-
 void portB_setup()
 {
 	// Note: 	PTB18 is TMP2_CH0

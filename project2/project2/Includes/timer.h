@@ -31,8 +31,9 @@
 #define START_VALUE_BLUE			0xFFFFu
 #define START_VALUE_GREEN			0xFFFFu
 
-#define TPM_100KHZ_CMP				0x40u
+#define TPM_100KHZ_CMP				0x28u // 4 MHz / 100 kHz = 40 steps
 
+void sys_clock_48MHz();
 void main_clk_init();
 void timer2_init();
 void timer0_init();

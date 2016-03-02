@@ -111,6 +111,8 @@ uint32_t SystemCoreClock = DEFAULT_SYSTEM_CLOCK;
    -- SystemInit()
    ---------------------------------------------------------------------------- */
 
+
+
 void SystemInit (void) {
 #if (DISABLE_WDOG)
   /* SIM_COPC: COPT=0,COPCLKS=0,COPW=0 */
