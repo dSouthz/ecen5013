@@ -15,6 +15,7 @@ void enable_timer0_interrupts()
 	//IRQ definitions in MKL25Z4.h
 	//This function comes from core_cm0plus.h
 	NVIC_EnableIRQ(TPM0_IRQn);
+    NVIC_EnableIRQ(TPM1_IRQn);
 }
 
 void sys_clock_48MHz()
@@ -75,7 +76,10 @@ void main_clk_init()
 {
 
 
+    MCG->C2 |= MCG_C2_IRCS_MASK; //fast internal ref clock
 
+      SIM->SCGC6 |= SIM_SCGC6_TPM0_MASK;//TPM0 clock activé
+      SIM->SOPT2 |= SIM_SOPT2_TPMSRC(0x03);//TPM clock source -> MCGIRCLK = 4MHz
 
 /*
  * Using system init() for now...
@@ -99,7 +103,7 @@ void main_clk_init()
 	// PTB18 is TPM2_CH0
 	// PTB19 is TPM2_CH1
 	// PTD01 is TPM0_ch1
-	SIM_SCGC6 |= SIM_SCGC6_TPM0(TPM_ENABLED) | SIM_SCGC6_TPM2(TPM_ENABLED);
+	SIM_SCGC6 |= SIM_SCGC6_TPM0(TPM_ENABLED) | SIM_SCGC6_TPM1(TPM_ENABLED) | SIM_SCGC6_TPM2(TPM_ENABLED);
 
 
 }
@@ -107,15 +111,24 @@ void main_clk_init()
 //TODO: rename - this is for red LED
 void timer2_init()
 {
+
+    TPM2->SC = TPM_SC_CMOD(0x00);//LPTPM desactivé
+    TPM2->SC &= ~TPM_SC_PS(0x00);//Prescaler /4 => 4MHz/4 = 1MHz => T = 1µs
+    //TPM0->SC &= !TPM_SC_CPWMS_MASK;//Compte de zéro à MOD reg
+   TPM2->MOD = TPM_MOD_MOD(0xFFFF -1);//1000*1µs = 1ms
+    TPM2->SC |= TPM_SC_TOF_MASK;//Reset TOF bit
+
+    TPM2->SC |= TPM_SC_CMOD(0x01);//LPTPM activé compteur intern
+
 	// Increment timer on every clock and prescale the clock by 1
 	//TPM2_BASE_PTR->SC = TPM_SC_CMOD(TPM_INCREMENT_EVERY_CLK) | TPM_SC_PS(TPM_PRESCALE_DIV_8);
 	//TPM2_BASE_PTR->SC = TPM_SC_CMOD(TPM_INCREMENT_EVERY_CLK) | TPM_SC_PS(TPM_PRESCALE_DIV_1);
-    TPM2_BASE_PTR->SC = TPM_SC_CMOD(TPM_INCREMENT_EVERY_CLK) | TPM_SC_PS(TPM_PRESCALE_DIV_1);
+   // TPM2_BASE_PTR->SC = TPM_SC_CMOD(TPM_INCREMENT_EVERY_CLK) | TPM_SC_PS(TPM_PRESCALE_DIV_1);
 
-	TPM2_BASE_PTR->SC &= ~(TPM_SC_CPWMS(TPM_SC_CPWMS_MASK)); //Set CPWMS to up counting
+	//TPM2_BASE_PTR->SC &= ~(TPM_SC_CPWMS(TPM_SC_CPWMS_MASK)); //Set CPWMS to up counting
 
 	// Set overflow value to max
-	TPM2_BASE_PTR->MOD = UINT16_MAX;
+	//TPM2_BASE_PTR->MOD = UINT16_MAX -1;
 
 
 	//Set to Edge-aligned PWM, high true pulses (clear output on match, set output on reload)
@@ -137,22 +150,45 @@ void timer2_init()
 }
 
 
+void timer1_init()
+{
+    TPM1->SC = TPM_SC_CMOD(0x00);//LPTPM desactivé
+    TPM1->SC &= ~TPM_SC_PS(0x00);//Prescaler /4 => 4MHz/4 = 1MHz => T = 1µs
+    //TPM0->SC &= !TPM_SC_CPWMS_MASK;//Compte de zéro à MOD reg
+    TPM1->MOD = TPM_MOD_MOD(40);//1000*1µs = 1ms
+    TPM1->SC |= TPM_SC_TOF_MASK;//Reset TOF bit
+
+    TPM1->SC |= TPM_SC_CMOD(0x01);//LPTPM activé compteur interne
+
+    TPM1_BASE_PTR->CONTROLS[TPM_CTRL_CH_PRF].CnSC = TPM_CnSC_ELSB(TPM_ENABLED) |
+                                                            TPM_CnSC_ELSA(TPM_DISABLED) |
+                                                            TPM_CnSC_MSB(TPM_ENABLED) |
+                                                            TPM_CnSC_MSA(TPM_DISABLED) | TPM_CnSC_CHIE(TPM_ENABLED);
+
+        //TODO: must be based on -DTIMER_INTERVAL
+        //      the 100KHz timer should be = 10
+        //TPM0_BASE_PTR->CONTROLS[TPM_CTRL_CH_PRF].CnV = TPM_100KHZ_CMP;
+    TPM1_BASE_PTR->CONTROLS[TPM_CTRL_CH_PRF].CnV = 40;
+
+}
+
+
 void timer0_init()
 {
 
-    MCG->C2 |= MCG_C2_IRCS_MASK;//Fast internal reference clock (4MHz)
+    //MCG->C2 |= MCG_C2_IRCS_MASK;//Fast internal reference clock (4MHz)
 
 
 
     //test code...
-    MCG->C2 |= MCG_C2_IRCS_MASK; //fast internal ref clock
+    //MCG->C2 |= MCG_C2_IRCS_MASK; //fast internal ref clock
 
-      SIM->SCGC6 |= SIM_SCGC6_TPM0_MASK;//TPM0 clock activé
-      SIM->SOPT2 |= SIM_SOPT2_TPMSRC(0x03);//TPM clock source -> MCGIRCLK = 4MHz
+      //SIM->SCGC6 |= SIM_SCGC6_TPM0_MASK;//TPM0 clock activé
+      //SIM->SOPT2 |= SIM_SOPT2_TPMSRC(0x03);//TPM clock source -> MCGIRCLK = 4MHz
       TPM0->SC = TPM_SC_CMOD(0x00);//LPTPM desactivé
       TPM0->SC &= ~TPM_SC_PS(0x00);//Prescaler /4 => 4MHz/4 = 1MHz => T = 1µs
       //TPM0->SC &= !TPM_SC_CPWMS_MASK;//Compte de zéro à MOD reg
-     TPM0->MOD = TPM_MOD_MOD(4000);//1000*1µs = 1ms
+     TPM0->MOD = TPM_MOD_MOD(0xFFFF -1);//1000*1µs = 1ms
       TPM0->SC |= TPM_SC_TOF_MASK;//Reset TOF bit
 
       TPM0->SC |= TPM_SC_CMOD(0x01);//LPTPM activé compteur interne
@@ -190,10 +226,10 @@ void timer0_init()
 													TPM_CnSC_MSB(TPM_ENABLED) |
 													TPM_CnSC_MSA(TPM_DISABLED) | TPM_CnSC_CHIE(TPM_ENABLED);
 
-	TPM0_BASE_PTR->CONTROLS[TPM_CTRL_CH_UPD].CnV = 4000; //TODO: don't hardcode...
+	TPM0_BASE_PTR->CONTROLS[TPM_CTRL_CH_UPD].CnV = 0xFFFE; //TODO: don't hardcode...
 
 	// Profiling timer - 100 KHz (10 usec)
-
+/*
 	TPM0_BASE_PTR->CONTROLS[TPM_CTRL_CH_PRF].CnSC = TPM_CnSC_ELSB(TPM_ENABLED) |
 														TPM_CnSC_ELSA(TPM_DISABLED) |
 														TPM_CnSC_MSB(TPM_ENABLED) |
@@ -203,6 +239,6 @@ void timer0_init()
 	//		the 100KHz timer should be = 10
 	//TPM0_BASE_PTR->CONTROLS[TPM_CTRL_CH_PRF].CnV = TPM_100KHZ_CMP;
 	TPM0_BASE_PTR->CONTROLS[TPM_CTRL_CH_PRF].CnV = 40;
-
+*/
 
 }

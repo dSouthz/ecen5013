@@ -115,6 +115,21 @@ void calculate_table()
 	}
 }
 
+extern void TPM1_IRQHandler()
+{
+    __disable_irq();
+
+    if (TPM1_BASE_PTR->CONTROLS[TPM_CTRL_CH_PRF].CnSC & TPM_CnSC_CHF_MASK)
+    {
+        //Writing to the CHF bit clears the interrupt
+        TPM1_BASE_PTR->CONTROLS[TPM_CTRL_CH_PRF].CnSC |= TPM_CnSC_CHF_MASK;
+        timer_count++;
+    }
+
+    NVIC_ClearPendingIRQ(TPM1_IRQn);
+    __enable_irq();
+}
+
 extern void TPM0_IRQHandler()
 {
 	uint16_t blue;
@@ -122,13 +137,17 @@ extern void TPM0_IRQHandler()
 
 	__disable_irq();
 
+	/*
 	if (TPM0_BASE_PTR->CONTROLS[TPM_CTRL_CH_PRF].CnSC & TPM_CnSC_CHF_MASK)
 	{
 		//Writing to the CHF bit clears the interrupt
 		TPM0_BASE_PTR->CONTROLS[TPM_CTRL_CH_PRF].CnSC |= TPM_CnSC_CHF_MASK;
 		timer_count++;
 	}
+
 	else if (TPM0_BASE_PTR->CONTROLS[TPM_CTRL_CH_UPD].CnSC & TPM_CnSC_CHF_MASK)
+	*/
+	if (TPM0_BASE_PTR->CONTROLS[TPM_CTRL_CH_UPD].CnSC & TPM_CnSC_CHF_MASK)
 	{
 		//Got an interrupt from the update channel. Acknowledge and move the count
 
@@ -144,11 +163,11 @@ extern void TPM0_IRQHandler()
 		{
 			green -= STEPS;
 		}
-/*
+
 		TPM2_BASE_PTR->CONTROLS[TPM_CTRL_CH_RED].CnV = table[pos];
 		TPM2_BASE_PTR->CONTROLS[TPM_CTRL_CH_GRN].CnV = table[green];
 		TPM0_BASE_PTR->CONTROLS[TPM_CTRL_CH_BLU].CnV = table[blue];
-*/
+
 		pos++;
 		if (pos >= STEPS)
 		{
@@ -360,9 +379,10 @@ int main(void)
     sys_clock_48MHz();
     SystemCoreClockUpdate(); //Can add expression for global variable SystemCoreClock to see core clk freq
 	calculate_table();
-	//main_clk_init();
+	main_clk_init();
 	timer0_init();
-	//timer2_init();
+	timer1_init();
+	timer2_init();
 	portB_setup();
 	portD_setup();
 	enable_timer0_interrupts();

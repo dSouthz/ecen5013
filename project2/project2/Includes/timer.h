@@ -22,7 +22,7 @@
 #define TPM_CTRL_CH_GRN				0x1u
 #define TPM_CTRL_CH_BLU				0x1u
 #define TPM_CTRL_CH_UPD				0x2u
-#define TPM_CTRL_CH_PRF				0x3u   // 100KHz profiler
+#define TPM_CTRL_CH_PRF				0x1u   // 100KHz profiler
 
 //TODO: make all of these 0xffff (off)
 #define START_VALUE_RED				0x5555u
