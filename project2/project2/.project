@@ -24,6 +24,18 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>Includes/memory.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/project1/inc/memory.h</locationURI>
+		</link>
+		<link>
+			<name>Sources/memory.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/project1/src/memory.c</locationURI>
+		</link>
+	</linkedResources>
 	<variableList>
 		<variable>
 			<name>PROJECT_KSDK_PATH</name>
