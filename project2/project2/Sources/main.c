@@ -12,6 +12,11 @@
 #include "timer.h"
 #include "ports.h"
 #include "test_cases.h"
+#ifdef PRJ_DMA_FUNC
+    #include "dma_memory.h"
+#endif
+
+#define PRJ_DMA_FUNC //TODO: make this a project wide define
 
 // RGB transition definitions
 #define MAX                     100
@@ -105,7 +110,6 @@ extern void TPM0_IRQHandler()
 }
 
 
-
 int main(void)
 {
     sys_clock_48MHz();          //Sets core clock to 48 MHz
@@ -117,6 +121,9 @@ int main(void)
 	timer2_init();              //Enable PWM timer 2 - Red, Green LEDs
 	portB_setup();              //Setup port B - red and green LEDs
 	portD_setup();              //Setup port D - blue LED
+#ifdef PRJ_DMA_FUNC
+	dma0_configure_8bit();
+#endif
 	enable_timer_interrupts();  //Enable interrupts for timers 0, 1
 
 	test_memory();
