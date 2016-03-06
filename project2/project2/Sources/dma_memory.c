@@ -2,7 +2,7 @@
 #include <stddef.h>
 #include "MKL25Z4.h"
 #include "dma_memory.h"
-#define PRJ_DMA_FUNC //TODO: make this a project level define...
+
 #define XFER_SIZE_8BIT      0x3
 #define XFER_SIZE_16BIT     0x2
 #define XFER_SIZE_32BIT     0x0

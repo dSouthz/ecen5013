@@ -2,7 +2,6 @@
 #include <stdint.h>
 #include "memory.h"
 
-#define PRJ_DMA_FUNC //TODO: make this a project level define.
 #ifndef PRJ_DMA_FUNC
 int8_t memmove(uint8_t *src, uint8_t *dst, uint32_t length)
 {

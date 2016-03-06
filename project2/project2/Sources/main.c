@@ -16,7 +16,6 @@
     #include "dma_memory.h"
 #endif
 
-#define PRJ_DMA_FUNC //TODO: make this a project wide define
 
 // RGB transition definitions
 #define MAX                     100
@@ -129,7 +128,6 @@ int main(void)
 	test_memory();
 	test_printf();
 
-	printf("this is a test\n");
     while(1)
     {
     }

@@ -9,6 +9,11 @@
 #include "timer.h"
 #include "ports.h"
 
+#ifdef TIMER_INTERVAL
+#undef TPM_MOD_COUNTER
+#define TPM_MOD_COUNTER (4 * TIMER_INTERVAL)
+#endif
+
 void enable_timer_interrupts()
 {
 
@@ -109,11 +114,7 @@ void timer2_init()
 	TPM2_BASE_PTR->CONTROLS[TPM_CTRL_CH_GRN].CnV = START_VALUE_GREEN;
 }
 
-#ifdef TIMER_INTERVAL
-#undef TPM_MOD_COUNTER
-#define TPM_MOD_COUNTER (4 * TIMER_INTERVAL)
-#endif
-//TODO: base this mod on value passed in from compile line
+
 void timer1_init()
 {
     TPM1_BASE_PTR->SC = TPM_SC_CMOD(TPM_DISABLED);             //Disable TPM
@@ -128,9 +129,8 @@ void timer1_init()
                                                     TPM_CnSC_MSA(TPM_DISABLED)  |
                                                     TPM_CnSC_CHIE(TPM_ENABLED);
 
-    //TODO: must be based on -DTIMER_INTERVAL
-    //      the 100KHz timer should be = 40
-    TPM1_BASE_PTR->CONTROLS[TPM_CTRL_CH_PRF].CnV =  TPM_PRESCALE_DIV_1;
+
+    TPM1_BASE_PTR->CONTROLS[TPM_CTRL_CH_PRF].CnV =  TPM_MOD_COUNTER;
 
 }
 

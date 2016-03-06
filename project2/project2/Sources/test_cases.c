@@ -6,11 +6,6 @@
 //You will also need to disable -fno-builtin options under Project->Properties->C/C++ Build->
 //                          Settings -> Cross ARM C Compiler->Miscellaneous
 
-//Instead of using the undef, you can, remove the macro definition in Project->Properties->
-//  Cross ARM C Compiler-> Preprocessor -> PRJ_MEM_FUNC
-
-//#define PRJ_DMA_FUNC
-#define PRJ_DMA_FUNC //TODO: make this a project wide define
 #ifdef PRJ_MEM_FUNC
     #ifdef PRJ_DMA_FUNC
         #include "dma_memory.h"
@@ -19,7 +14,7 @@
     #endif
 #else
     #include <string.h>
-    #error "-fno-builtin -fno-builtin-memmove and -fno-builtin memcpy must be removed from the compiler options. Then disable this error"
+    //Note: -fno-builtin -fno-builtin-memmove and -fno-builtin memcpy must be removed from the compiler options.
 #endif
 
 
@@ -169,7 +164,7 @@ uint32_t test_strncpy(uint8_t *src, uint8_t *dst, size_t len)
     return clk_end - clk_start;
 }
 #endif //PRJ_MEM_FUNC
-
+uint32_t results[NUM_TEST_FUNCTIONS][NUM_TEST_CASES];
 void test_memory()
 {
     uint8_t buffer_src[MAX_BUF_SIZE];
@@ -177,7 +172,7 @@ void test_memory()
 
     uint32_t i;
 
-    uint32_t results[NUM_TEST_FUNCTIONS][NUM_TEST_CASES];
+
 
     //Initialize the array with junk data
     for (i=0; i < MAX_BUF_SIZE; i++)
@@ -255,15 +250,6 @@ void test_memory()
     buffer_src[0] = i++; //Does nothing. Only here to serve as a breakpoint, since eclipse sucks at life.
 }
 
-uint32_t adjust_clock(uint32_t clk_start, uint32_t clk_end)
-{
-    if (clk_end < clk_start)
-    {
-        return (UINT32_MAX - clk_start + clk_end);
-    }
-
-    return (clk_start - clk_end);
-}
 
 void test_printf()
 {
@@ -272,7 +258,6 @@ void test_printf()
     int32_t  var1 = VAR1;
     float    var2 = VAR2;
     int32_t  var3 = VAR3;
-
     uint32_t printf_20_char;
     uint32_t printf_str_var1;
     uint32_t printf_str_var1_var2;
@@ -281,22 +266,54 @@ void test_printf()
     clk_start = profile_timer_count;
     printf(STR1);
     clk_end = profile_timer_count;
-    printf_20_char = adjust_clock(clk_start, clk_end);
+    if (clk_end < clk_start)
+    {
+        printf_20_char = UINT32_MAX - clk_start + clk_end;
+    }
+    else
+    {
+        printf_20_char = clk_end - clk_start;
+    }
+    //printf_20_char = adjust_clock(clk_start, clk_end);
 
     clk_start = profile_timer_count;
     printf(STR1 "%d", var1);
     clk_end = profile_timer_count;
-    printf_str_var1 = adjust_clock(clk_start, clk_end);
+    if (clk_end < clk_start)
+    {
+        printf_str_var1 = UINT32_MAX - clk_start + clk_end;
+    }
+    else
+    {
+        printf_str_var1 = clk_end - clk_start;
+    }
+    //printf_str_var1 = adjust_clock(clk_start, clk_end);
 
     clk_start = profile_timer_count;
     printf(STR1 "%d %f", var1, var2);
     clk_end = profile_timer_count;
-    printf_str_var1_var2 = adjust_clock(clk_start, clk_end);
+    if (clk_end < clk_start)
+    {
+        printf_str_var1_var2 = UINT32_MAX - clk_start + clk_end;
+    }
+    else
+    {
+        printf_str_var1_var2 = clk_end - clk_start;
+    }
+    //printf_str_var1_var2 = adjust_clock(clk_start, clk_end);
 
     clk_start = profile_timer_count;
     printf(STR1 " %d %f %d", var1, var2, var3);
     clk_end = profile_timer_count;
-    printf_str_var1_var2_var3 = adjust_clock(clk_start, clk_end);
+    if (clk_end < clk_start)
+    {
+        printf_str_var1_var2_var3 = UINT32_MAX - clk_start + clk_end;
+    }
+    else
+    {
+        printf_str_var1_var2_var3 = clk_end - clk_start;
+    }
+    //printf_str_var1_var2_var3 = adjust_clock(clk_start, clk_end);
 
     printf("eclipse sucks!"); //Junk instruction. Only here to make it easier to set breakpoints
                              // because eclipse sucks at breakpoints at the end of functions.
