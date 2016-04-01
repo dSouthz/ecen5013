@@ -137,28 +137,15 @@ void RunTestSuite()
 		LOG_UART(msg, strlen(msg));
 	}
 
-	if (Test_boundary() == TEST_SUCCESS)
-	{
-		char msg[] = "CB UNIT TEST: 2/3 - test_boundary() .... PASS";
-		pass++;
-		LOG_UART(msg, strlen(msg));
-	}
-	else
-	{
-		char msg[] = "CB UNIT TEST: 2/3 - test_boundary() .... FAIL";
-		fail++;
-		LOG_UART(msg, strlen(msg));
-	}
-
 	if (Test_pointer_length() == TEST_SUCCESS)
 	{
-		char msg[] = "CB UNIT TEST: 2/3 - test_pointer_length() .... PASS";
+		char msg[] = "CB UNIT TEST: 3/3 - test_pointer_length() .... PASS";
 		pass++;
 		LOG_UART(msg, strlen(msg));
 	}
 	else
 	{
-		char msg[] = "CB UNIT TEST: 2/3 - test_pointer_length() .... FAIL";
+		char msg[] = "CB UNIT TEST: 3/3 - test_pointer_length() .... FAIL";
 		fail++;
 		LOG_UART(msg, strlen(msg));
 	}

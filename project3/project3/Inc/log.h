@@ -16,7 +16,17 @@ typedef enum _data_type
 
 static const int MAX_FLOAT_STRING_SIZE = 32;
 
+// Logs a string to the UART
+// Params: 	str - string to log
+// 			len - string length
+//
 void LOG_UART(char *str, size_t len);
+
+// Logs a string and parameter to the UART
+// Params: 	str   - string to log
+// 			len   - string length
+//			param - the parameter to log
+//			type  - the type of parameter to log
 void LOG_UART_PARAM(char *str, size_t len, void *param, DataType_t type);
 
 #endif /* SOURCES_LOG_H_ */

@@ -9,6 +9,7 @@
 
 #define EXTRA_SPACE 100
 
+//Prints a UART demo, showing that integers and floating points can be converted and sent
 void PrintDemo()
 {
 	char testing[] = "Testing123, Serial Print Test, no params";

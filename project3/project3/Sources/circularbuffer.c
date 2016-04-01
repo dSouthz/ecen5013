@@ -105,10 +105,7 @@ CircBufStatus_t CircBuf_Remove(CircBuf_t *buf)
 		buf->head = buf->buffer;
 	}
 
-	memset(buf->head, 'X', 1); //TODO: remove
-
 	buf->head = (void *)((char *)buf->head + buf->item_size);
-
 
 	return BUFFER_OK;
 }
