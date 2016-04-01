@@ -7,6 +7,9 @@ static const double PRECISION = 0.00000000000001;
 
 /**
 * Double to ASCII
+*
+* Taken from StackOverflow:
+* http://stackoverflow.com/questions/2302969/how-to-implement-char-ftoafloat-num-without-sprintf-library-function-i
 */
 char *dtoa(char *s, double n) {
 	// handle special cases

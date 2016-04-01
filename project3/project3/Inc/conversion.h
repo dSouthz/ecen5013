@@ -8,9 +8,8 @@
 #ifndef SOURCES_CONVERSION_H_
 #define SOURCES_CONVERSION_H_
 
-static const int MAX_FLOAT_STRING_SIZE = 32;
-
 char *dtoa(char *s, double n);
 char *itoa(int num);
+char *uitoa(unsigned int num);
 
 #endif /* SOURCES_CONVERSION_H_ */
