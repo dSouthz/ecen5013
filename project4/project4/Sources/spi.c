@@ -10,15 +10,30 @@
 #define PIN_SPI1_MISO 3
 #define PIN_SPI1_PCS0 4
 
+#define GPIOE_PIN4 0x10
+
 #define SPI_PRESCALE_DIV	0b011		// Divide by 4
 #define SPI_BAUD_DIV		0b0001		// Divide by 4
 
+void SPI1_SS_LOW()
+{
+	GPIOE->PCOR |= GPIOE_PIN4;
+}
+
+void SPI1_SS_HIGH()
+{
+	GPIOE->PSOR |= GPIOE_PIN4;
+}
+
 void SPI1_TX_Byte(uint8_t data)
 {
+	int i;
+
 	while (!(SPI1->S & SPI_S_SPTEF_MASK))
 	{
 		//Do nothing! Wait for flag to clear so we can send
 	}
+
 	SPI1->D = data;
 }
 
@@ -39,5 +54,8 @@ void SPI1_Init()
 	PORTE->PCR[PIN_SPI1_MOSI] |= PORT_PCR_MUX(ALT2);
 	PORTE->PCR[PIN_SPI1_SCK]  |= PORT_PCR_MUX(ALT2);
 	PORTE->PCR[PIN_SPI1_MISO] |= PORT_PCR_MUX(ALT2);
-	PORTE->PCR[PIN_SPI1_PCS0] |= PORT_PCR_MUX(ALT2);
+	PORTE->PCR[PIN_SPI1_PCS0] |= PORT_PCR_MUX(ALT1); //Make SS a GPIO pin to control manually
+	GPIOE->PDDR |= GPIOE_PIN4;
+	GPIOE->PSOR |= GPIOE_PIN4;
+	SPI1_SS_HIGH();
 }

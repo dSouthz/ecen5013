@@ -30,33 +30,9 @@
 #include <stdint.h>
 #include "fsl_device_registers.h"
 #include "spi.h"
+#include "nrf.h"
 
-static int i = 0;
 
-uint8_t *ReadSPIData(uint8_t* buffer, size_t len)
-{
-	uint8_t* dataptr = buffer;
-
-	if (buffer == NULL)
-	{
-		return NULL;
-	}
-
-	while (len > 0)
-	{
-		SPI1_TX_Byte(0xFF);  //Send NOP (0xFF) to get data
-		while(!(SPI1->S & SPI_S_SPRF_MASK))
-		{
-			//Wait for data
-		}
-		*dataptr = SPI1->D;
-
-		dataptr++;
-		len--;
-	}
-
-	return buffer;
-}
 
 int main(void)
 {
@@ -68,21 +44,30 @@ int main(void)
 		buffer[i] = 0;
 	}
 
+	buffer[10] = 0xDE;
+	buffer[11] = 0xAD;
+	buffer[12] = 0xBE;
+	buffer[13] = 0xEF;
+	buffer[14] = 0xAB;
+
 	SystemInit();
 	SPI1_Init();
 
+	NRF_Write_Register(REG_RX_ADDR_P0, REG_RX_ADDR_P0_LEN, &buffer[10]);
+
+	NRF_Read_Register(REG_RX_ADDR_P0, REG_RX_ADDR_P0_LEN, buffer);
 	//Send power on command
-	SPI1_TX_Byte(0x20); //Write to register 00
-	SPI1_TX_Byte(0x02); //Write power on. Everything else 0 for now.
+	//SPI1_TX_Byte(0x20); //Write to register 00
+	//SPI1_TX_Byte(0x02); //Write power on. Everything else 0 for now.
 
-	for (i=0; i < 10000; i++){}  //Wait a while to go to Standby state... > 1.5 ms
+	//for (i=0; i < 10000; i++){}  //Wait a while to go to Standby state... > 1.5 ms
 
-	SPI1_TX_Byte(0x0A);	// Query register A
+	//SPI1_TX_Byte(0x0A);	// Query register A
 
-	ReadSPIData(buffer, 5); // Read 5 bytes of data from SPI
+	//ReadSPIData(buffer, 5); // Read 5 bytes of data from SPI
 
     for (;;) {
-        i++;
+
     }
     /* Never leave main */
     return 0;
